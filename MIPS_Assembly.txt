@@ -1,0 +1,101 @@
+#Code
+
+# $s1 and $s2 are used as iterators
+
+addi $s1,$0,0  #s1=i
+
+addi $s2, $0,0 #s2=j
+
+# Copying the input and output adresses to temporary registers
+
+addi $t7,$t2,0
+addi $t8,$t3,0
+
+# Copying the input values to the ouput location for sorting. Sorting is done in place.
+
+move1:	beq $s1,$t1,moveend
+	
+	lw $s7,0($t2)
+	
+	sw $s7,0($t3)
+	
+	addi $t2,$t2,4
+	
+	addi $t3,$t3,4
+	
+	addi $s1,$s1,1
+	
+	j move1
+	
+# Restoring all the values of the register whose value was changed 
+
+moveend:add $t2,$t7,$0
+	
+	add $t3,$t8,$0
+	
+	add $s7,$0,$0
+	
+	add $s1,$0,$0
+	
+	
+# Sorting algorithm starts.In this code bubble sort has been implimented
+
+# sort1 is the outer loop
+
+sort1:beq $s1, $t1, loopend1
+	addi $s2,$s1,1
+	jal calc_i 
+	addi $t8,$t3,0
+	add $t8, $t8, $t4
+	lw $s4, 0($t8)
+	
+	#sort2 is the inner loop
+	
+	sort2:	beq $s2, $t1, loopend2
+		jal calc_j
+		move $t8,$t3
+		add $t8, $t8, $t5
+		lw $s5,0($t8)
+		sub $s7,$s4,$s5
+		bgtz $s7 swap
+		addi $s2, $s2, 1
+		j sort2
+	loopend2:	addi $s1, $s1, 1
+			j sort1
+loopend1: addi $s7,$0,0
+
+	
+
+
+
+# Swaps the elements at index i and j
+swap:	addi $t7,$s4,0
+	addi $s4,$s5,0
+	addi $s5,$t7,0
+	addi $t8,$t3,0
+	add $t8, $t8, $t4
+	sw $s4, 0($t8)
+	addi $t8,$t3,0
+	add $t8, $t8, $t5
+	sw $s5, 0($t8)
+	addi $s2,$s2,1
+	j sort2
+
+# Function calculates the ith index
+
+calc_i:	addi $t4, $0,0
+	add $t4, $t4, $s1
+	add $t4, $t4, $s1
+	add $t4, $t4, $s1
+	add $t4, $t4, $s1
+	jr $ra
+
+
+# Function calculates the jth index
+
+calc_j:	addi $t5, $0,0
+	add $t5, $t5, $s2
+	add $t5, $t5, $s2
+	add $t5, $t5, $s2
+	add $t5, $t5, $s2
+	jr $ra
